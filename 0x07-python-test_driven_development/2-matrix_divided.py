@@ -4,7 +4,6 @@
     Matrix division module
 """
 
-
 def matrix_divided(matrix, div):
     """ Divides each value of a matrix by a number.
     Args:
