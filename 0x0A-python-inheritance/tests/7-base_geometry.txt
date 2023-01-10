@@ -1,92 +1,113 @@
-The ``Base Geometry`` module
-============================
+Importing the function from the module:
+        >>> BG = __import__("7-base_geometry").BaseGeometry
 
-Using ``BaseGeometry``
-----------------------
+Checking for module docstring:
+         >>> m = __import__("7-base_geometry").__doc__
+         >>> len(m) > 1
+         True
 
-This is an example text file in reStructuredText format.
-First import ``BaseGeometry`` from the ``7-base_geometry`` module:
+Checking for class docstring:
+         >>> c = __import__("7-base_geometry").BaseGeometry.__doc__
+         >>> len(c) > 1
+         True
 
-    >>> BaseGeometry = __import__("7-base_geometry").BaseGeometry
+Checking for method docstring:
+	  >>> mod1 = __import__("7-base_geometry").BaseGeometry.area.__doc__
+	  >>> len(mod1) > 1
+	  True
+	  >>> mod2 = __import__("7-base_geometry").BaseGeometry.integer_validator.__doc__
+          >>> len(mod2) > 1
+          True
 
-Now use it:
+Checking for area failure:
+	  >>> b = BG()
+	  >>> b.area()
+	  Traceback (most recent call last):
+	  ...
+	  Exception: area() is not implemented
 
-    >>> bg = BaseGeometry()
-    >>> type(bg)
-    <class '7-base_geometry.BaseGeometry'>
+Checking too many arguments for area:
+	  >>> b.area(1)
+	  Traceback (most recent call last):
+          ...
+	  TypeError: area() takes 1 positional argument but 2 were given
 
+Checking integer validator for passing integer:
+	  >>> b.integer_validator("integer", 1)
 
-This class should define 2 functions
+Checking for integer == 0:
+	  >>> b.integer_validator("integer", 0)
+	  Traceback (most recent call last):
+          ...
+          ValueError: integer must be greater than 0
 
-``area``
-    >>> 'area' in dir(BaseGeometry)
-    True
+Checking for integer < 0;
+	  >>> b.integer_validator("integer", -5)
+	  Traceback (most recent call last):
+          ...
+          ValueError: integer must be greater than 0
 
-``integer_validator``
-    >>> 'integer_validator' in dir(BaseGeometry)
-    True
+Checking for non-integer types:
+	  >>> b.integer_validator("bool", True)
+	  Traceback (most recent call last):
+          ...
+          TypeError: bool must be an integer
+	  >>> b.integer_validator("float", 1.5)
+          Traceback (most recent call last):
+          ...
+          TypeError: float must be an integer
+	  >>> b.integer_validator("complex", complex(1, 1))
+          Traceback (most recent call last):
+          ...
+          TypeError: complex must be an integer
+	  >>> b.integer_validator("string", "hello")
+          Traceback (most recent call last):
+          ...
+          TypeError: string must be an integer
+	  >>> b.integer_validator("tuple", (1, 2))
+          Traceback (most recent call last):
+          ...
+          TypeError: tuple must be an integer
+	  >>> b.integer_validator("list", [1, 2, 3])
+	  Traceback (most recent call last):
+          ...
+          TypeError: list must be an integer
+	  >>> b.integer_validator("dict", {"key": "value"})
+          Traceback (most recent call last):
+          ...
+          TypeError: dict must be an integer
+	  >>> b.integer_validator("set", {"hello", "world"})
+          Traceback (most recent call last):
+          ...
+          TypeError: set must be an integer
+	  >>> b.integer_validator("frozenset", frozenset(["hello", "world"]))
+          Traceback (most recent call last):
+          ...
+          TypeError: frozenset must be an integer
+	  >>> b.integer_validator("bytes", b"bytes")
+          Traceback (most recent call last):
+          ...
+          TypeError: bytes must be an integer
+	  >>> b.integer_validator("bytearrays", bytearray(b"bytes"))
+          Traceback (most recent call last):
+          ...
+          TypeError: bytearrays must be an integer
 
-Should test publicity of methods ?
+Checking for no arguments to integer_validator:
+	  >>> b.integer_validator()
+	  Traceback (most recent call last):
+          ...
+	  TypeError: integer_validator() missing 2 required positional arguments: 'name' and 'value'
 
-And no instance attributes or methods
-    >>> dir(bg) == dir(BaseGeometry)
-    True
+Checking for only 1 argument to integer_validator:
+	  >>> b.integer_validator("integer")
+	  Traceback (most recent call last):
+          ...
+	  TypeError: integer_validator() missing 1 required positional argument: 'value'
 
-Test ``area``
--------------
-It is not implemented
-    >>> bg.area()
-    Traceback (most recent call last):
-    Exception: area() is not implemented
-
-Test ``integer_validator``
---------------------------
-Integer takes in 2 arguments
-
-    >>> bg.integer_validator()
-    Traceback (most recent call last):
-    TypeError: integer_validator() missing 2 required positional arguments: 'name' and 'value'
-
-    >>> bg.integer_validator(1)
-    Traceback (most recent call last):
-    TypeError: integer_validator() missing 1 required positional argument: 'value'
-
-    >>> bg.integer_validator(1, 2, 3)
-    Traceback (most recent call last):
-    TypeError: integer_validator() takes 3 positional arguments but 4 were given
-
-
-Test for type
-     >>> def test_i(tests=[]):
-     ...     for test in tests:
-     ...         try:
-     ...	     bg.integer_validator("name", test)
-     ...       	 except Exception as e:
-     ...      	     print("[{}] {} for type {}".format(e.__class__.__name__, e, type(test)))
-
-     >>> tests = [True, 1.24, -76.87, set(), [1, 2], "a string", {"a":1}, ("11", 3), test_i, bg, BaseGeometry, None]
-     >>> test_i(tests)
-     [TypeError] name must be an integer for type <class 'bool'>
-     [TypeError] name must be an integer for type <class 'float'>
-     [TypeError] name must be an integer for type <class 'float'>
-     [TypeError] name must be an integer for type <class 'set'>
-     [TypeError] name must be an integer for type <class 'list'>
-     [TypeError] name must be an integer for type <class 'str'>
-     [TypeError] name must be an integer for type <class 'dict'>
-     [TypeError] name must be an integer for type <class 'tuple'>
-     [TypeError] name must be an integer for type <class 'function'>
-     [TypeError] name must be an integer for type <class '7-base_geometry.BaseGeometry'>
-     [TypeError] name must be an integer for type <class 'type'>
-     [TypeError] name must be an integer for type <class 'NoneType'>
-
-Test for sign
-     >>> bg.integer_validator("name", -23)
-     Traceback (most recent call last):
-     ValueError: name must be greater than 0
-
-     >>> bg.integer_validator("name", 0)
-     Traceback (most recent call last):
-     ValueError: name must be greater than 0
-
-When it works it does not return anything
-     >>> bg.integer_validator("name", 3)
+Checking for too many arguments:
+	  >>> b.integer_validator("integer", 1, 2)
+	  Traceback (most recent call last):
+          ...
+	  TypeError: integer_validator() takes 3 positional arguments but 4 were given
+	
