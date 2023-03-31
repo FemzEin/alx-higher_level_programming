@@ -1,24 +1,14 @@
 #!/usr/bin/python3
-""" 10-my_github.py """
+"""
+given username and pw as param, get your id from Github api
+usage: ./10-my_github.py [github_username] [github_pw]
+"""
+from sys import argv
+import requests
+from requests.auth import HTTPBasicAuth
+
+
 if __name__ == "__main__":
-    """ __main__ """
-    import sys
-    import requests
-    from requests.auth import HTTPBasicAuth
-
-    url = 'https://api.github.com/users/'
-    r = ""
-    try:
-        if len(sys.argv) == 3:
-            username = sys.argv[1]
-            passw = sys.argv[2]
-            url = url + username
-            r = requests.get(url, auth=HTTPBasicAuth(username, passw))
-        else:
-            print("None")
-            sys.exit(0)
-
-        d = r.json()
-        print(d['id'])
-    except:
-        print("None")
+    url = 'https://api.github.com/user'
+    r = requests.get(url, auth=HTTPBasicAuth(argv[1], argv[2]))
+    print(r.json().get('id'))
