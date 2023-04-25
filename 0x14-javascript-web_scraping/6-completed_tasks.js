@@ -8,7 +8,7 @@ request.get(url, (err, res, body) => {
   if (err) throw err;
   const todos = JSON.parse(body);
   for (let i = 0; i < todos.length; i++) {
-    let key = todos[i].userId;
+    const key = todos[i].userId;
     if (todos[i].completed) {
       if (!(key in completedTasks)) {
         completedTasks[key] = 1;
